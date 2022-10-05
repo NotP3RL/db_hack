@@ -36,7 +36,11 @@ def create_commendation(name, subject_name, date=None):
     group_letter = school_kid.group_letter
     subject = Subject.objects.get(title__contains=subject_name, year_of_study=year_of_study)
     if date:
-        lesson = Lesson.objects.get(year_of_study=year_of_study, group_letter=group_letter, subject=subject, date=date)
+        try:
+            lesson = Lesson.objects.get(year_of_study=year_of_study, group_letter=group_letter, subject=subject, date=date)
+        except ObjectDoesNotExist:
+            logging.warning('У этого ученика не было этого предмета в эту дату')
+            return
     else:
         commendations = Commendation.objects.filter(schoolkid=school_kid, subject=subject)
         commendations_dates = []
